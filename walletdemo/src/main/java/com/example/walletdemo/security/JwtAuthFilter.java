@@ -1,5 +1,6 @@
 package com.example.walletdemo.security;
 
+import com.example.walletdemo.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

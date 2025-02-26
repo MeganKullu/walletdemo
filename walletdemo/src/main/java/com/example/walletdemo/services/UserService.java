@@ -19,7 +19,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
 
-    // run the method to register a user
+    //method to register a user
     public void registerUser(RegisterUserRequest request){
         if(userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already in use!");
