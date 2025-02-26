@@ -22,7 +22,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterUserRequest request){
         userService.registerUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Registered successfully! Please await admin approval.")
+        return ResponseEntity.status(HttpStatus.CREATED).body("Registered successfully! Please await admin approval.");
     }
 
 }
