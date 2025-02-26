@@ -2,7 +2,7 @@ package com.example.walletdemo.models;
 
 public enum TransactionStatus {
     PENDING,
-    COMPLETED,
+    SUCCESS,
     FAILED
 }
 

@@ -44,13 +44,17 @@ public class UserService {
 
     }
 
-    // method to approve the user
+    //method to find the user by email
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+    }
 
+    // method to approve the user
     public void approveUser(long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found!"));
         user.setApproved(true);
         userRepository.save(user);
     }
-
 }

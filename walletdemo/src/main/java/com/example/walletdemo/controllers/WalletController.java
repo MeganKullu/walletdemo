@@ -1,12 +1,17 @@
 package com.example.walletdemo.controllers;
 
 import com.example.walletdemo.dto.TransferRequest;
+import com.example.walletdemo.models.User;
+import com.example.walletdemo.models.Wallet;
+import com.example.walletdemo.services.JwtService;
+import com.example.walletdemo.services.UserService;
 import com.example.walletdemo.services.WalletService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/user")
@@ -15,13 +20,25 @@ public class WalletController {
     @Autowired
     private WalletService walletService;
 
-    @PostMapping("/transfer")
-    public ResponseEntity<String> transfer(@RequestBody TransferRequest transferRequest) {
-        // Get logged-in user's ID from JWT
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long senderUserId = Long.parseLong(authentication.getName()); // JWT should store user ID
+    @Autowired
+    private JwtService jwtService;
 
-        walletService.transfer(senderUserId, transferRequest);
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/transfer")
+    public ResponseEntity<String> transfer(@RequestBody TransferRequest transferRequest, HttpServletRequest request) {
+        // Extract JWT from request header
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtService.extractEmail(token); // Extract user email from token
+
+        // Find user and wallet
+        User sender = userService.findByEmail(email);
+        Wallet senderWallet = sender.getWallet();
+
+        // Perform transfer
+        walletService.transfer(senderWallet.getUser().getId(), transferRequest);
+
         return ResponseEntity.ok("Transfer Successful!");
     }
 }

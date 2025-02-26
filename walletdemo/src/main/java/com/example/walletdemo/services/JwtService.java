@@ -3,7 +3,6 @@ package com.example.walletdemo.services;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 
@@ -12,27 +11,31 @@ public class JwtService {
 
     private static final String SECRET_KEY = "nnncuhuehuiw6252356287%%3e252!";
 
-    // Generate token with one hour expiry
-    public String generateToken(UserDetails userDetails) {
+    // Generate JWT token with email and expiration time (1 hour)
+    public String generateToken(String email) {
         return JWT.create()
-                .withSubject(userDetails.getUsername())
+                .withSubject(email)
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiry
                 .sign(Algorithm.HMAC256(SECRET_KEY));
     }
 
-    public String extractUsername(String token) {
+    // Extract email from JWT
+    public String extractEmail(String token) {
         return decodeToken(token).getSubject();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        return (extractUsername(token).equals(userDetails.getUsername()) && !isTokenExpired(token));
+    // Validate token
+    public boolean validateToken(String token, String email) {
+        return (extractEmail(token).equals(email) && !isTokenExpired(token));
     }
 
+    // Check if token is expired
     private boolean isTokenExpired(String token) {
         return decodeToken(token).getExpiresAt().before(new Date());
     }
 
+    // Decode JWT token
     private DecodedJWT decodeToken(String token) {
         return JWT.require(Algorithm.HMAC256(SECRET_KEY))
                 .build()
