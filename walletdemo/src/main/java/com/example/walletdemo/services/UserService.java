@@ -41,7 +41,7 @@ public class UserService {
 
         Wallet wallet = new Wallet();
         wallet.setUser(user);
-        wallet.setBalance(0.0);
+        wallet.setBalance(100.0);
         user.setWallet(wallet);
 
         userRepository.save(user);
@@ -80,6 +80,14 @@ public class UserService {
     public List<UserDTO> getPendingUsersDTO() {
         List<User> pendingUsers = userRepository.findByIsApprovedFalseAndRole(Role.USER);
         return pendingUsers.stream()
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    //method to search user by email
+    public List<UserDTO> searchUsersByEmail(String emailQuery) {
+        List<User> users = userRepository.findByEmailContainingAndIsApprovedTrue(emailQuery);
+        return users.stream()
                 .map(UserDTO::new)
                 .collect(Collectors.toList());
     }
