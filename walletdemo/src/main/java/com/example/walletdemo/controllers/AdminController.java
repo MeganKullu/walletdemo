@@ -1,5 +1,6 @@
 package com.example.walletdemo.controllers;
 
+import com.example.walletdemo.dto.TransactionDTO;
 import com.example.walletdemo.dto.UserDTO;
 import com.example.walletdemo.models.Transaction;
 import com.example.walletdemo.models.User;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -36,9 +38,12 @@ public class AdminController {
 
     // Get all transactions
     @GetMapping("/transactions")
-    public ResponseEntity<List<Transaction>> getAllTransactions() {
+    public ResponseEntity<List<TransactionDTO>> getAllTransactions() {
         List<Transaction> transactions = transactionService.getAllTransactions();
-        return ResponseEntity.ok(transactions);
+        List<TransactionDTO> transactionDTOs = transactions.stream()
+                .map(TransactionDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(transactionDTOs);
     }
 
     // Get transactions by user ID
