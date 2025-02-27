@@ -11,10 +11,11 @@ public class JwtService {
 
     private static final String SECRET_KEY = "nnncuhuehuiw6252356287%%3e252!";
 
-    // Generate JWT token with email and expiration time (1 hour)
-    public String generateToken(String email) {
+    // Generate JWT token with email, role and expiration time (1 hour)
+    public String generateToken(String email, String role) {
         return JWT.create()
                 .withSubject(email)
+                .withClaim("role", role)
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiry
                 .sign(Algorithm.HMAC256(SECRET_KEY));
@@ -23,6 +24,11 @@ public class JwtService {
     // Extract email from JWT
     public String extractEmail(String token) {
         return decodeToken(token).getSubject();
+    }
+
+    // Extract role from JWT
+    public String extractRole(String token) {
+        return decodeToken(token).getClaim("role").asString();
     }
 
     // Validate token

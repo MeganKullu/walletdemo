@@ -1,6 +1,8 @@
 package com.example.walletdemo.controllers;
 
+import com.example.walletdemo.dto.UserDTO;
 import com.example.walletdemo.models.Transaction;
+import com.example.walletdemo.models.User;
 import com.example.walletdemo.services.TransactionService;
 import com.example.walletdemo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,13 @@ public class AdminController {
     public ResponseEntity<String> approveUser(@PathVariable Long userId){
         userService.approveUser(userId);
         return ResponseEntity.ok("User approved successfully");
+    }
+
+    //get pending users
+    @GetMapping("/pending-users")
+    public ResponseEntity<List<UserDTO>> getPendingUsers() {
+        List<UserDTO> pendingUsers = userService.getPendingUsersDTO();
+        return ResponseEntity.ok(pendingUsers);
     }
 
     // Get all transactions

@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Map;
 
@@ -31,8 +32,16 @@ public class AuthController {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        String token = jwtService.generateToken(userDetails.getUsername());
 
-        return Map.of("token", token);
+        // Extract the role from authorities
+        String role = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("ROLE_USER")
+                .replace("ROLE_", "");
+
+        String token = jwtService.generateToken(userDetails.getUsername(), role);
+
+        return Map.of("token", token, "role", role);
     }
 }

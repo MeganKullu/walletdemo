@@ -1,6 +1,7 @@
 package com.example.walletdemo.services;
 
 import com.example.walletdemo.dto.RegisterUserRequest;
+import com.example.walletdemo.dto.UserDTO;
 import com.example.walletdemo.models.Role;
 import com.example.walletdemo.models.User;
 import com.example.walletdemo.models.Wallet;
@@ -8,6 +9,9 @@ import com.example.walletdemo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -70,6 +74,14 @@ public class UserService {
     public boolean verifyPin(String email, String pin) {
         User user = findByEmail(email);
         return passwordEncoder.matches(pin, user.getPin());
+    }
+
+    //method to get pending users
+    public List<UserDTO> getPendingUsersDTO() {
+        List<User> pendingUsers = userRepository.findByIsApprovedFalseAndRole(Role.USER);
+        return pendingUsers.stream()
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
     }
 
 }
