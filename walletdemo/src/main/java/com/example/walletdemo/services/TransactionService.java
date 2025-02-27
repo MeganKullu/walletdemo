@@ -20,6 +20,6 @@ public class TransactionService {
 
     // Get transactions for a specific user
     public List<Transaction> getTransactionsByUserId(Long userId) {
-        return transactionRepository.findByUserId(userId);
+        return transactionRepository.findBySenderIdOrReceiverId(userId, userId);
     }
 }

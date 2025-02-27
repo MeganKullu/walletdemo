@@ -57,4 +57,19 @@ public class UserService {
         user.setApproved(true);
         userRepository.save(user);
     }
+
+    //method to set up pin
+    public void setupPin(String email, String pin) {
+        User user = findByEmail(email);
+        user.setPin(passwordEncoder.encode(pin)); // Encode the PIN for security
+        user.setPinSet(true);
+        userRepository.save(user);
+    }
+
+    //method to verify pin
+    public boolean verifyPin(String email, String pin) {
+        User user = findByEmail(email);
+        return passwordEncoder.matches(pin, user.getPin());
+    }
+
 }
