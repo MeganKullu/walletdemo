@@ -46,13 +46,18 @@ public class WalletController {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtService.extractEmail(token);
 
+        // Find user and wallet
+        User sender = userService.findByEmail(email);
+
+        // Check if user is approved
+        if (!sender.isApproved()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Account pending approval");
+        }
+
         // Verify PIN before proceeding
         if (!userService.verifyPin(email, transferRequest.getPin())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid PIN");
         }
-
-        // Find user and wallet
-        User sender = userService.findByEmail(email);
 
         // Check if PIN is set
         if (!sender.isPinSet()) {
@@ -77,13 +82,18 @@ public class WalletController {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String senderEmail = jwtService.extractEmail(token);
 
+        // Find sender
+        User sender = userService.findByEmail(senderEmail);
+
+        // Check if user is approved
+        if (!sender.isApproved()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Account pending approval");
+        }
+
         // Verify PIN before proceeding
         if (!userService.verifyPin(senderEmail, transferRequest.getPin())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid PIN");
         }
-
-        // Find sender
-        User sender = userService.findByEmail(senderEmail);
 
         // Check if PIN is set
         if (!sender.isPinSet()) {
@@ -110,13 +120,20 @@ public class WalletController {
 
     // Get wallet info method
     @GetMapping("/wallet-info")
-    public ResponseEntity<WalletInfoDTO> getWalletInfo(HttpServletRequest request) {
+    public ResponseEntity<?> getWalletInfo(HttpServletRequest request) {
         // Extract JWT from request header
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtService.extractEmail(token);
 
         // Find user and wallet
         User user = userService.findByEmail(email);
+
+        // Check if user is approved
+        if (!user.isApproved()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Account pending approval"));
+        }
+
         Wallet wallet = user.getWallet();
 
         // Get user transactions
@@ -133,7 +150,7 @@ public class WalletController {
 
     // Checking the pin status
     @GetMapping("/check-pin-status")
-    public ResponseEntity<Map<String, Boolean>> checkPinStatus(HttpServletRequest request) {
+    public ResponseEntity<?> checkPinStatus(HttpServletRequest request) {
         try {
             // Extract JWT from request header
             String token = request.getHeader("Authorization").replace("Bearer ", "");
@@ -141,6 +158,12 @@ public class WalletController {
 
             // Find user
             User user = userService.findByEmail(email);
+
+            // Check if user is approved
+            if (!user.isApproved()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("error", "Account pending approval"));
+            }
 
             Map<String, Boolean> response = new HashMap<>();
             response.put("isPinSet", user.isPinSet());
@@ -166,6 +189,11 @@ public class WalletController {
 
             // Find user
             User user = userService.findByEmail(email);
+
+            // Check if user is approved
+            if (!user.isApproved()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Account pending approval");
+            }
 
             // Email transaction summary directly without any approval step
             transactionService.emailTransactionSummary(user);
