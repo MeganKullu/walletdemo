@@ -1,6 +1,6 @@
 package com.example.walletdemo.dto;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
 public class TransferByEmailRequest {

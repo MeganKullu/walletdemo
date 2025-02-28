@@ -2,9 +2,7 @@ package com.example.walletdemo.dto;
 
 import com.example.walletdemo.models.Role;
 import com.example.walletdemo.models.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter

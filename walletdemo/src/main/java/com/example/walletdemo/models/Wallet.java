@@ -1,10 +1,7 @@
 package com.example.walletdemo.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Entity
@@ -25,4 +22,5 @@ public class Wallet {
     private User user;
 
     private double balance = 0.0;
+
 }

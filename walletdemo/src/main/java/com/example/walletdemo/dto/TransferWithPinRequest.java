@@ -1,8 +1,8 @@
 package com.example.walletdemo.dto;
 
-import lombok.Data;
-
-@Data
+import lombok.*;
+@Setter
+@Getter
 public class TransferWithPinRequest extends TransferRequest {
     private String pin;
 }

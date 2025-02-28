@@ -2,9 +2,7 @@ package com.example.walletdemo.dto;
 
 import com.example.walletdemo.models.Transaction;
 import com.example.walletdemo.models.Wallet;
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.*;
 import java.util.List;
 import java.util.stream.Collectors;
 

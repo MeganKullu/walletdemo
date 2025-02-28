@@ -1,8 +1,8 @@
 package com.example.walletdemo.dto;
 
 import com.example.walletdemo.models.Transaction;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 
 import java.time.LocalDateTime;
 

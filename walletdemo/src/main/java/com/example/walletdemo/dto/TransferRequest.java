@@ -1,8 +1,9 @@
 package com.example.walletdemo.dto;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
+@Setter
 public class TransferRequest {
     private Long receiverUserId;
     private double amount;
