@@ -122,8 +122,12 @@ public class WalletController {
         // Get user transactions
         List<Transaction> transactions = transactionService.getTransactionsByUserId(user.getId());
 
-        // Create and return wallet info DTO
+        // Create wallet info DTO
         WalletInfoDTO walletInfo = new WalletInfoDTO(wallet, transactions);
+
+        // Set directions for each transaction from user's perspective
+        walletInfo.getTransactions().forEach(dto -> dto.setDirectionForUser(user.getId()));
+
         return ResponseEntity.ok(walletInfo);
     }
 
@@ -149,6 +153,26 @@ public class WalletController {
             Map<String, Boolean> errorResponse = new HashMap<>();
             errorResponse.put("isPinSet", false);
             return ResponseEntity.ok(errorResponse);
+        }
+    }
+
+    // get transaction summary
+    @PostMapping("/email-transaction-summary")
+    public ResponseEntity<String> emailTransactionSummary(HttpServletRequest request) {
+        try {
+            // Extract JWT from request header
+            String token = request.getHeader("Authorization").replace("Bearer ", "");
+            String email = jwtService.extractEmail(token);
+
+            // Find user
+            User user = userService.findByEmail(email);
+
+            // Email transaction summary directly without any approval step
+            transactionService.emailTransactionSummary(user);
+
+            return ResponseEntity.ok("Transaction summary has been emailed to your address (" + user.getEmail() + ")");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to email transaction summary: " + e.getMessage());
         }
     }
 }

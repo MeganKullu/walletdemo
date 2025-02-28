@@ -1,6 +1,7 @@
 package com.example.walletdemo.controllers;
 
 import com.example.walletdemo.dto.TransactionDTO;
+import com.example.walletdemo.dto.TransactionSummaryDTO;
 import com.example.walletdemo.dto.UserDTO;
 import com.example.walletdemo.models.Transaction;
 import com.example.walletdemo.models.User;
@@ -39,18 +40,21 @@ public class AdminController {
     // Get all transactions
     @GetMapping("/transactions")
     public ResponseEntity<List<TransactionDTO>> getAllTransactions() {
-        List<Transaction> transactions = transactionService.getAllTransactions();
-        List<TransactionDTO> transactionDTOs = transactions.stream()
-                .map(TransactionDTO::new)
-                .collect(Collectors.toList());
+        List<TransactionDTO> transactionDTOs = transactionService.getAllTransactionsDTO();
         return ResponseEntity.ok(transactionDTOs);
     }
 
     // Get transactions by user ID
     @GetMapping("/transactions/{userId}")
-    public ResponseEntity<List<Transaction>> getTransactionsByUserId(@PathVariable Long userId) {
-        List<Transaction> transactions = transactionService.getTransactionsByUserId(userId);
-        return ResponseEntity.ok(transactions);
+    public ResponseEntity<List<TransactionDTO>> getTransactionsByUserId(@PathVariable Long userId) {
+        List<TransactionDTO> transactionDTOs = transactionService.getTransactionsByUserIdDTO(userId);
+        return ResponseEntity.ok(transactionDTOs);
     }
 
+    // Get transactions summary
+    @GetMapping("/transactions-summary")
+    public ResponseEntity<TransactionSummaryDTO> getTransactionSummary() {
+        TransactionSummaryDTO summary = transactionService.getTransactionSummary();
+        return ResponseEntity.ok(summary);
+    }
 }
